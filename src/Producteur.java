@@ -1,4 +1,5 @@
 
-public class Producteur {
+public class Producteur extends Thread{
 
+	
 }
