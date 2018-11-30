@@ -1,7 +1,6 @@
 
-public class ProdConsBuffer {
 
-	public interface IProdConsBuffer {
+public interface ProdConsBuffer {
 		/**
 		* put m in the prodcons buffer
 		**/
@@ -12,5 +11,4 @@ public class ProdConsBuffer {
 		/**
 		* returns the number of messages currently available in the prodcons buffer **/
 		public int nmsg();
-		}
 }
