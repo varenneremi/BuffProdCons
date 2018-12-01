@@ -1,6 +1,12 @@
 
 public class ProdConsBuffer implements IProdConsBuffer{
 	
+	int nbreMess;
+	
+	ProdConsBuffer (int nbre) {
+		this.nbreMess = nbre;
+	}
+	
 	public void put(Message m) throws InterruptedException {
 		// TODO Auto-generated method stub
 		

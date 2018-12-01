@@ -11,4 +11,6 @@ public class TestProdCons {
 	ArrayList Buffer = new ArrayList<Integer>();
 	int Bufsz = 0;
 	
+	public static void main(String[] args){
+	}
 }
