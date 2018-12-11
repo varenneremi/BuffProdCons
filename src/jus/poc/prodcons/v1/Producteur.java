@@ -15,7 +15,7 @@ public class Producteur extends Thread{
 	
 	@Override
 	public void run() {
-	  System.out.println(" * lancement Producteur ID: " + this.getId() + " nombre message à créé: "+ nbreMess);
+	  System.out.println(" * lancement Producteur ID: " + this.getId() + " ; nombre message à créé: "+ nbreMess);
 		// TODO Auto-generated method stub
 		for(float i=0;i != nbreMess;i++) {
 		  try {
@@ -26,6 +26,6 @@ public class Producteur extends Thread{
         e.printStackTrace();
       }
 		}
-		System.out.println(" * Producteur ID: " + this.getId() + " a fini sa tâche!");
+		System.out.println(" ! Producteur ID: " + this.getId() + " a fini sa tâche!");
 	}
 }

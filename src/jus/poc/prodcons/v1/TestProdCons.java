@@ -37,27 +37,27 @@ private void start() {
   }
   ProdConsBuffer buffer = new ProdConsBuffer(BufSz);
   
+  int nbProd = 0;
+  int nbConso = 0;
   nbMessACreeTotal = 0;
   nbMessageAConsoTotal = 0;
   
+  // plus propre à faire
   for(int i=0; i< (nbP + nbC);i++) {
-    if(Math.random() < 0.5F) {
+    if((nbProd != nbP) && (Math.random() < 0.5F)) {
       Producteur p = new Producteur(ProdTime, Mavg, buffer);
       nbMessACreeTotal += p.nbreMess;
-    }else {
+      nbProd += 1;
+      p.start();
+    }else if(nbConso != nbC){
       Consommateur c = new Consommateur(ConsTime,buffer,Mavg);
       nbMessageAConsoTotal += c.NbreMessCons;
+      nbConso += 1;
+      c.start();
     }
   }
-  
-  System.out.println(" *** ");
-  new Producteur(ProdTime, Mavg, buffer);
-  new Consommateur(ConsTime,buffer,Mavg);
-  new Consommateur(ConsTime,buffer,Mavg);
-  new Producteur(ProdTime, Mavg, buffer);
-  new Consommateur(ConsTime,buffer,Mavg);
-  new Producteur(ProdTime, Mavg, buffer);
-  new Producteur(ProdTime, Mavg, buffer);
+  System.out.println(" *** RECAP : " + nbP + " producteurs ; "+nbC+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+nbMessageAConsoTotal + " messages à consommer ; buffer de taille "+ BufSz );
+ 
 }
 	
 	public static void main(String[] args){

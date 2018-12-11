@@ -9,11 +9,10 @@ public class Consommateur extends Thread{
 	  this.delay = delay;
 		this.buffer = buff;
 		NbreMessCons = (int)(((float) 2*nM)*Math.random());
-
 	}
 	
 	public void run() {
-	   System.out.println(" * lancement Consommateur ID: " + this.getId() + " nombre message à consommée " + NbreMessCons);
+	   System.out.println(" * lancement Consommateur ID: " + this.getId() + " ; nombre message à consommée " + NbreMessCons);
 		// TODO Auto-generated method stub	
 	 for(int i =0; i != NbreMessCons;i++) {
 	   System.out.println(" - Consommateur ID: " + this.getId() + " get numéro " + i);
@@ -27,7 +26,7 @@ public class Consommateur extends Thread{
         e.printStackTrace();
       }
 	  }
-	 System.out.println(" * Consommateur ID: " + this.getId() + " à fini sa tâche!");
+	 System.out.println(" ! Consommateur ID: " + this.getId() + " à fini sa tâche!");
 	}
 	
 }
