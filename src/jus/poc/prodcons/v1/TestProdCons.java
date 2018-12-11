@@ -14,6 +14,8 @@ int BufSz;
 int ProdTime;
 int ConsTime;
 int Mavg;
+int nbMessACreeTotal;
+int nbMessageAConsoTotal;
 
 TestProdCons(){
   properties = new Properties();
@@ -33,14 +35,29 @@ private void start() {
   }catch(IOException e) {
     e.printStackTrace();
   }
-  ProdConsBuffer buffer = new ProdConsBuffer(BufSz,ProdTime,ConsTime);
-  new Producteur(1, Mavg, buffer);
-  new Consommateur(buffer,Mavg);
-  new Consommateur(buffer,Mavg);
-  new Producteur(2, Mavg, buffer);
-  new Consommateur(buffer,Mavg);
-  new Producteur(3, Mavg, buffer);
-  new Producteur(4, Mavg, buffer);
+  ProdConsBuffer buffer = new ProdConsBuffer(BufSz);
+  
+  nbMessACreeTotal = 0;
+  nbMessageAConsoTotal = 0;
+  
+  for(int i=0; i< (nbP + nbC);i++) {
+    if(Math.random() < 0.5F) {
+      Producteur p = new Producteur(ProdTime, Mavg, buffer);
+      nbMessACreeTotal += p.nbreMess;
+    }else {
+      Consommateur c = new Consommateur(ConsTime,buffer,Mavg);
+      nbMessageAConsoTotal += c.NbreMessCons;
+    }
+  }
+  
+  System.out.println(" *** ");
+  new Producteur(ProdTime, Mavg, buffer);
+  new Consommateur(ConsTime,buffer,Mavg);
+  new Consommateur(ConsTime,buffer,Mavg);
+  new Producteur(ProdTime, Mavg, buffer);
+  new Consommateur(ConsTime,buffer,Mavg);
+  new Producteur(ProdTime, Mavg, buffer);
+  new Producteur(ProdTime, Mavg, buffer);
 }
 	
 	public static void main(String[] args){

@@ -11,10 +11,8 @@ public class ProdConsBuffer implements IProdConsBuffer{
 	ArrayList<Message> buffer;
 	int consoCompte;
 	
-	ProdConsBuffer (int sizeB,int pT,int cT) {
+	ProdConsBuffer (int sizeB) {
 		this.sizeBuf = sizeB;
-		prodTime = pT;
-		consTime = cT;
 		buffer = new ArrayList<Message>(sizeB);
 		consoCompte = 0;
 		System.out.println(" *** ConsBuffer size "+sizeBuf + " ");
@@ -22,37 +20,34 @@ public class ProdConsBuffer implements IProdConsBuffer{
 	
 	public synchronized void put(Message m) throws InterruptedException {
 	    System.out.println(" + Producteur ID: " + m.prod.getId() + " put "+ m.message);
-		  while(buffer.size() == sizeBuf ) {
+		  while(nmsg() == sizeBuf ) {
 		    try {
 		      System.out.println(" ++ Prod en attente ! Buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
 		      this.wait();
 		    }catch(InterruptedException e) {}
 		  }
-		  /*try {
-		    this.wait(1000);
-		  }catch(InterruptedException e) {}*/
 		  buffer.add(m);
 		  System.out.println(" ++ Ajout ; buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
 		  this.notifyAll();
 	}
 
 	public synchronized Message get() throws InterruptedException {
-	    while(buffer.size() == 0) {
+	    while(nmsg() == 0) {
 	       try {
 	         System.out.println(" -- Conso en attente ! Consommés " + consoCompte);
 	          this.wait();
 	        }catch(InterruptedException e) {}
 	    }
-      //this.wait(1000);
 	    consoCompte++;
       Message m = buffer.remove(0);
-      System.out.println(" -- Consommés : " + consoCompte + " ; buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
+      System.out.println(" -- Nombre de message consommé : " + consoCompte + " ; buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
       this.notifyAll();
       return m;
 	}
 
-	public int nmsg() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+  @Override
+  public int nmsg() {
+    // TODO Auto-generated method stub
+    return buffer.size();
+  }
 }
