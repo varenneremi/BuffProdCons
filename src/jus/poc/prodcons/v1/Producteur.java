@@ -8,9 +8,8 @@ public class Producteur extends Thread{
 	
 	Producteur (int delay,int nbM,ProdConsBuffer buffer) {
 	  this.delay = delay;
-	  nbreMess = (int)(((float) 2*nbM)*Math.random());
+	  nbreMess = nbM;
 		this.buffer = buffer;
-		
 	}
 	
 	@Override

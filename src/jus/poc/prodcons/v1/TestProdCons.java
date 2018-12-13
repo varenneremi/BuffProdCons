@@ -2,7 +2,9 @@ package jus.poc.prodcons.v1;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Random;
 
 public class TestProdCons extends Thread{
 
@@ -15,10 +17,13 @@ public class TestProdCons extends Thread{
   int ConsTime;
   int Mavg;
   int nbMessACreeTotal;
-  int nbMessageAConsoTotal;
-
+  ArrayList<Producteur> producteurs;
+  Random random;
+  
   TestProdCons(){
     properties = new Properties();
+    producteurs = new ArrayList<Producteur>();
+    random = new Random();
   }
 
   public void start() {
@@ -40,36 +45,36 @@ public class TestProdCons extends Thread{
     int nbProd = 0;
     int nbConso = 0;
     nbMessACreeTotal = 0;
-    nbMessageAConsoTotal = 0;
 
-    // plus propre à faire
     for(int i=0; i< (nbP + nbC);i++) {
       if((nbProd != nbP) && (Math.random() < 0.5F)) {
-        Producteur p = new Producteur(ProdTime, Mavg, buffer);
+        Producteur p = new Producteur(ProdTime, (int) (random.nextGaussian() + Mavg), buffer);
+        producteurs.add(p);
         nbMessACreeTotal += p.nbreMess;
         nbProd += 1;
-        p.setDaemon(true);
         p.start();
       }else if(nbConso != nbC){
-        Consommateur c = new Consommateur(ConsTime,buffer,Mavg);
-        nbMessageAConsoTotal += c.NbreMessCons;
+        Consommateur c = new Consommateur(ConsTime,buffer);
         nbConso += 1;
         c.setDaemon(true);
         c.start();
       }
     }
-    System.out.println(" *** RECAP : " + nbP + " producteurs ; "+nbC+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+nbMessageAConsoTotal + " messages à consommer ; buffer de taille "+ BufSz );
-    boolean cont = true;
-    while(cont) {
+    System.out.println(" *** RECAP : " + nbP + " producteurs ; "+nbC+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz);
+    
+    producteurs.forEach(p -> {
       try {
-        this.sleep(1000);
+        p.join();
       } catch (InterruptedException e) {}
-      if(buffer.consoCompte == nbMessACreeTotal) {
-        cont = false;
+    });
+    
+    while(buffer.consoCompte != nbMessACreeTotal) {
+      try {
+        this.wait();
+      } catch (InterruptedException e) {
       }
     }
     System.out.println(" *** TERMINATE ***");
-    
   }
 
   public static void main(String[] args){
