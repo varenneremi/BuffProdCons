@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v3;
 
 public class Consommateur extends Thread{
   int delay;
@@ -19,7 +19,6 @@ public class Consommateur extends Thread{
         System.out.println(m.toString());
         buffer.consoCompte++;
         this.sleep(delay);
-
       } catch (InterruptedException e) {}
     }
   }

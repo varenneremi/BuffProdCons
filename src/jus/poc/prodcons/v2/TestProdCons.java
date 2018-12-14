@@ -1,11 +1,14 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v2;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Random;
 
 public class TestProdCons extends Thread{
+
+
   Properties properties;
   int nbP;
   int nbC;
@@ -17,7 +20,7 @@ public class TestProdCons extends Thread{
   ArrayList<Producteur> producteurs;
   Random random;
   long time_start;
-
+  
   TestProdCons(){
     time_start = System.currentTimeMillis();
     properties = new Properties();
@@ -60,29 +63,25 @@ public class TestProdCons extends Thread{
         c.start();
       }
     }
-    System.out.println(" *** RECAP : " + nbProd + " producteurs ; "+nbConso+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz);
-
+    System.out.println(" *** RECAP : " + nbP + " producteurs ; "+nbC+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz);
+    
     producteurs.forEach(p -> {
       try {
         p.join();
       } catch (InterruptedException e) {}
     }); 
-
+    
     //a corriger je pense
     while(buffer.consoCompte != nbMessACreeTotal) {
       this.yield();
-      System.out.println(" nb message : "+buffer.nbreMess + " consoCompte : " + buffer.consoCompte + " NbTotale : " + nbMessACreeTotal);
     }
-
+    
     System.out.println(" *** TERMINATE ***");
     System.out.println("temps de traitement total : " + (System.currentTimeMillis() - time_start));
   }
 
   public static void main(String[] args){
-
     TestProdCons test = new TestProdCons();
     test.start();
-
-    System.out.println(" *** TERMINATE TOTALE***");
   }
 }

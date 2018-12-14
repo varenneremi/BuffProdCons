@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v3;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
@@ -49,7 +49,7 @@ public class TestProdCons extends Thread{
       if((nbProd != nbP) && (Math.random() < 0.5F)) {
         Producteur p = new Producteur(ProdTime, (int) (random.nextGaussian() + Mavg), buffer);
         producteurs.add(p);
-        nbMessACreeTotal += p.nbreMess;
+        nbMessACreeTotal += p.nbreMess*5;
         nbProd += 1;
         p.setDaemon(true);
         p.start();
@@ -71,6 +71,12 @@ public class TestProdCons extends Thread{
     //a corriger je pense
     while(buffer.consoCompte != nbMessACreeTotal) {
       this.yield();
+      try {
+        this.sleep(1000);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
       System.out.println(" nb message : "+buffer.nbreMess + " consoCompte : " + buffer.consoCompte + " NbTotale : " + nbMessACreeTotal);
     }
 
@@ -84,5 +90,7 @@ public class TestProdCons extends Thread{
     test.start();
 
     System.out.println(" *** TERMINATE TOTALE***");
+    System.out.flush();
+    
   }
 }
