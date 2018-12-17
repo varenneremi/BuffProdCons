@@ -10,12 +10,12 @@ public class Consommateur extends Thread{
   }
 
   public void run() {
-    System.out.println(" * lancement Consommateur ID: " + this.getId());
+    System.out.println("\n ------------------------------------------------------------ \n"
+        + "  ----- Lancement du consommateur ayant comme ID : " + this.getId() + " -----"
+        + "\n ------------------------------------------------------------ ");
     while(true) {
-      System.out.println(" - Consommateur ID: " + this.getId() + " get");
       try {
         Message m = buffer.get();
-        m.setConsommateur(this);
         System.out.println(m.toString());
         buffer.consoCompte++;
         this.sleep(delay);

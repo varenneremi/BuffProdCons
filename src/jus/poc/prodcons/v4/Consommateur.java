@@ -10,16 +10,19 @@ public class Consommateur extends Thread{
   }
 
   public void run() {
-    System.out.println(" * lancement Consommateur ID: " + this.getId());
+    System.out.println("\n ------------------------------------------------------------ \n"
+        + "  ----- Lancement du consommateur ayant comme ID : " + this.getId() + " -----"
+        + "\n ------------------------------------------------------------ ");
     while(true) {
-      System.out.println(" - Consommateur ID: " + this.getId() + " get");
       try {
-        Message m = buffer.get();
-        m.setConsommateur(this);
-        System.out.println(m.toString());
-        buffer.consoCompte++;
+        buffer.sema_autorisation.acquire();
+        for(int i=0;i != 20;i++) {
+          Message m = buffer.get();
+          System.out.println(m.toString());
+          buffer.consoCompte++;
+        }
+        buffer.sema_autorisation.release();
         this.sleep(delay);
-
       } catch (InterruptedException e) {}
     }
   }

@@ -14,17 +14,18 @@ public class Producteur extends Thread{
 	
 	@Override
 	public void run() {
-	  System.out.println(" * lancement Producteur ID: " + this.getId() + " ; nombre message à créé: "+ nbreMess);
-		// TODO Auto-generated method stub
-		for(float i=0;i != nbreMess;i++) {
+    System.out.println("\n ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ \n"
+        + "  +++++ Lancement du producteur ayant comme ID : " + this.getId() + " et qui doit produire "+ nbreMess + " message(s) +++++"
+        + "\n ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    
+		for(int i=0;i != nbreMess;i++) {
 		  try {
         buffer.put(new Message(this,"numero "+i));
         this.sleep(delay);
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
 		}
-		System.out.println(" ! Producteur ID: " + this.getId() + " a fini sa tâche!");
+		System.out.println("\n  !!! Producteur " + this.getId() + " a fini sa tâche!");
 	}
 }

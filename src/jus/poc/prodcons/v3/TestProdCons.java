@@ -13,7 +13,6 @@ public class TestProdCons extends Thread{
   int ProdTime;
   int ConsTime;
   int Mavg;
-  int nbMessACreeTotal;
   ArrayList<Producteur> producteurs;
   Random random;
   long time_start;
@@ -43,13 +42,11 @@ public class TestProdCons extends Thread{
 
     int nbProd = 0;
     int nbConso = 0;
-    nbMessACreeTotal = 0;
 
     for(int i=0; i< (nbP + nbC);i++) {
       if((nbProd != nbP) && (Math.random() < 0.5F)) {
-        Producteur p = new Producteur(ProdTime, (int) (random.nextGaussian() + Mavg), buffer);
+        Producteur p = new Producteur(ProdTime, (int) (random.nextGaussian() + Mavg), buffer,nbC);
         producteurs.add(p);
-        nbMessACreeTotal += p.nbreMess*5;
         nbProd += 1;
         p.setDaemon(true);
         p.start();
@@ -60,37 +57,33 @@ public class TestProdCons extends Thread{
         c.start();
       }
     }
-    System.out.println(" *** RECAP : " + nbProd + " producteurs ; "+nbConso+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz);
-
+    System.out.println("\n ************************************************************ \n"
+        + "  ***** RECAPITULATIF : " + nbProd + " producteurs ; "+nbConso+" consommateurs ; buffer de taille "+ BufSz + " *****"
+        + "\n ************************************************************ \n");
+    
     producteurs.forEach(p -> {
       try {
         p.join();
       } catch (InterruptedException e) {}
     }); 
 
-    //a corriger je pense
-    while(buffer.consoCompte != nbMessACreeTotal) {
+    while(buffer.consoCompte != buffer.nbMessCreeTotal) {
       this.yield();
-      try {
-        this.sleep(1000);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      System.out.println(" nb message : "+buffer.nbreMess + " consoCompte : " + buffer.consoCompte + " NbTotale : " + nbMessACreeTotal);
     }
 
-    System.out.println(" *** TERMINATE ***");
-    System.out.println("temps de traitement total : " + (System.currentTimeMillis() - time_start));
+    System.out.println("\n ============================================================ \n"
+        + "  ===== Le programme a fini en " + (System.currentTimeMillis() - time_start) +" millisecondes ====="
+        + "\n ============================================================ \n");
+    
+    if(buffer.nmsg() != 0) {
+      System.out.println("  !!!!! Il reste " + buffer.nmsg() + " message(s) dans le buffer !!!!! ");
+    }
   }
 
   public static void main(String[] args){
 
     TestProdCons test = new TestProdCons();
     test.start();
-
-    System.out.println(" *** TERMINATE TOTALE***");
-    System.out.flush();
     
   }
 }

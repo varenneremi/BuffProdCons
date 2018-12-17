@@ -1,48 +1,64 @@
 package jus.poc.prodcons.v1;
 
-import java.util.ArrayList;
-
 public class ProdConsBuffer implements IProdConsBuffer{
 
-  int nbreMess;
-  int sizeBuf;
-  int prodTime;
-  int consTime;
-  ArrayList<Message> buffer;
-  int consoCompte;
+  int prodTime;       //temps de production d'un message
+  int consTime;       //temps de consommation d'un message
+  Message[] buffer;   //buffer de message
+  int tete;           //premier élément contenu dans le buffer
+  int queue;          //dernier élément contenu dans le buffer
+  int nbmessage;      //nombre de message dans le buffer
+  int consoCompte;    //nombre de message consommé
 
   ProdConsBuffer (int sizeB) {
-    this.sizeBuf = sizeB;
-    buffer = new ArrayList<Message>(sizeB);
+    buffer = new Message[sizeB];
+    tete = 0;
+    queue = -1;
     consoCompte = 0;
-    System.out.println(" *** ConsBuffer size "+sizeBuf + " *** ");
+    nbmessage = 0;
+    System.out.println("  ***** Le buffer est de taille "+ sizeB + " ***** ");
   }
 
   public synchronized void put(Message m) throws InterruptedException {
-    System.out.println(" + Producteur ID: " + m.prod.getId() + " put "+ m.message);
-    while(nmsg() == sizeBuf ) {
-      System.out.println(" ++ Prod en attente ! Buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
+    while(nmsg() == buffer.length ) {   //garde
+      System.out.println("\n  ### Producteur "+ Thread.currentThread().getId()+" en attente ! Le buffer contient " + nmsg() + "message(s) sur " + buffer.length);
       this.wait();
     }
-    buffer.add(m);
-    System.out.println(" ++ Ajout ; buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
+    add(m);       //action
+    System.out.println("\n  +++ Producteur " + Thread.currentThread().getId() + " a ajouté le message '" + m.message +"'. Le buffer contient " + nmsg() + " message(s) sur " + buffer.length);
     this.notifyAll();
   }
 
   public synchronized Message get() throws InterruptedException {
-    while(nmsg() == 0) {
-      System.out.println(" -- Conso en attente ! Consommés " + consoCompte);
+    while(nmsg() == 0) {          //garde
+      System.out.println("\n  ### Consommateur "+ Thread.currentThread().getId() +" en attente ! Nombre de message consommé : " + consoCompte);
       this.wait();
     }
-    Message m = buffer.remove(0);
-    System.out.println(" -- Nombre de message consommé : " + (consoCompte+1) + " ; buffer contient " + buffer.size() + " sur " + sizeBuf + " messages");
+    Message m = remove();         //action
+    System.out.println("\n  --- Consommateur " + Thread.currentThread().getId() +" a retiré le message '"+m.message +"' ajouté par le producteur " + m.prod.getId() +". Nombre de message consommé : " + (consoCompte+1) 
+        + ".\n      Le buffer contient " + nmsg() + " messsage(s) sur " + buffer.length);
     this.notifyAll();
     return m;
   }
 
   @Override
-  public int nmsg() {
-    // TODO Auto-generated method stub
-    return buffer.size();
+  public int nmsg() {     //nombre de message contenu dans le buffer
+    return nbmessage;
+  }
+
+  //ajout d'un message dans le buffer
+  public void add(Message m) {
+    queue = (queue +1) % buffer.length;
+    buffer[queue] = m;
+    nbmessage++;
+  }
+
+  //on enlève un message du buffer
+  public Message remove() {
+    Message m = buffer[tete];
+    buffer[tete] =null;
+    tete = (tete +1) % buffer.length;
+    nbmessage--;
+    return m;
   }
 }

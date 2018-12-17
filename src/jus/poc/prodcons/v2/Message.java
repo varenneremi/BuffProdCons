@@ -2,24 +2,15 @@ package jus.poc.prodcons.v2;
 
 public class Message {
 
-	Producteur prod;
-	Consommateur cons;
-	String message;
+  Producteur prod;
+  String message;
 
-	Message (Producteur p,String message) {
-		this.prod =p;
-		this.message = message;
-	}
-	
-	public String toString(){
-		return (" --- Message : '" + message +"' consommé par Consommateur " + this.cons.getId() +" ; créé par Producteur "+ prod.getId());
-	}
-	
-	public Producteur getNumProducteur(){
-		return prod;
-	}
-	
-	public void setConsommateur(Consommateur cons) {
-	  this.cons = cons;
-	}
+  Message (Producteur p,String message) {
+    this.prod =p;
+    this.message = message;
+  }
+
+  public String toString(){
+    return ("\n  @ Message : '" + message +"' consommé par le consommateur " + Thread.currentThread().getId() +" et créé par le producteur "+ prod.getId() + " @");
+  }
 }

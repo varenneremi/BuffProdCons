@@ -10,15 +10,17 @@ public class Consommateur extends Thread{
   }
 
   public void run() {
-    System.out.println(" * lancement Consommateur ID: " + this.getId());
-    while(true) {
-      System.out.println(" - Consommateur ID: " + this.getId() + " get");
+    
+    System.out.println("\n ------------------------------------------------------------ \n"
+        + "  ----- Lancement du consommateur ayant comme ID : " + this.getId() + " -----"
+        + "\n ------------------------------------------------------------ ");
+
+    while(true) {     //boucle de consommation
       try {
         Message m = buffer.get();
-        m.setConsommateur(this);
-        System.out.println(m.toString());
-        buffer.consoCompte++;
-        this.sleep(delay);
+        System.out.println(m.toString()); //traitement du message
+        buffer.consoCompte++;             //on incremente le compteur de message consommé
+        this.sleep(delay);                //délai de traitement
 
       } catch (InterruptedException e) {}
     }

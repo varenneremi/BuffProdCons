@@ -60,29 +60,32 @@ public class TestProdCons extends Thread{
         c.start();
       }
     }
-    System.out.println(" *** RECAP : " + nbProd + " producteurs ; "+nbConso+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz);
-
+    
+    System.out.println("\n ************************************************************ \n"
+        + "  ***** RECAPITULATIF : " + nbProd + " producteurs ; "+nbConso+" consommateurs ; "+nbMessACreeTotal+" messages à créer ; "+ " buffer de taille "+ BufSz + " *****"
+        + "\n ************************************************************ \n");
     producteurs.forEach(p -> {
       try {
         p.join();
       } catch (InterruptedException e) {}
     }); 
 
-    //a corriger je pense
     while(buffer.consoCompte != nbMessACreeTotal) {
       this.yield();
-      System.out.println(" nb message : "+buffer.nbreMess + " consoCompte : " + buffer.consoCompte + " NbTotale : " + nbMessACreeTotal);
-    }
+   }
 
-    System.out.println(" *** TERMINATE ***");
-    System.out.println("temps de traitement total : " + (System.currentTimeMillis() - time_start));
+    System.out.println("\n ============================================================ \n"
+        + "  ===== Le programme a fini en " + (System.currentTimeMillis() - time_start) +" millisecondes ====="
+        + "\n ============================================================ \n");
+    
+    if(buffer.nmsg() != 0) {
+      System.out.println("  !!!!! Il reste " + buffer.nmsg() + " message(s) dans le buffer !!!!! ");
+    }
   }
 
   public static void main(String[] args){
 
     TestProdCons test = new TestProdCons();
     test.start();
-
-    System.out.println(" *** TERMINATE TOTALE***");
   }
 }
